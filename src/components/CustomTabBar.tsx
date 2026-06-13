@@ -1,14 +1,13 @@
+import { useThemeColors } from "@/hooks/use-theme";
 import {
     Pressable,
     View,
-    useColorScheme,
-    useWindowDimensions,
+    useWindowDimensions
 } from "react-native";
 import Animated, {
     useAnimatedStyle,
     withSpring,
 } from "react-native-reanimated";
-import { Colors } from "../constants/theme";
 
 interface CustomTabBarProps {
   state: any;
@@ -21,8 +20,7 @@ export default function CustomTabBar({
   descriptors,
   navigation,
 }: CustomTabBarProps) {
-  const colorScheme = useColorScheme() ?? "light";
-  const theme = Colors[colorScheme === "dark" ? "dark" : "light"];
+  const theme = useThemeColors();
 
   const { width, height } = useWindowDimensions();
 

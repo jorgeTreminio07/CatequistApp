@@ -8,6 +8,7 @@ const { height } = Dimensions.get("window");
 const TabsLayout = () => {
   return (
     <Tabs
+      initialRouteName="index"
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         tabBarStyle: { height: height * 0.1 },
