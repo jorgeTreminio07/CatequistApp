@@ -1,3 +1,4 @@
+import CustomTabBar from "@/components/CustomTabBar";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Dimensions } from "react-native";
@@ -7,6 +8,7 @@ const { height } = Dimensions.get("window");
 const TabsLayout = () => {
   return (
     <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         tabBarStyle: { height: height * 0.1 },
       }}
