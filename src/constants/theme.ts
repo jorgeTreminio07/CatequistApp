@@ -22,7 +22,7 @@ export const Colors = {
     info: "#3b8cf5",
     gradientPrimary: ["#6c3fc5", "#FFF"],
     diosColor: "#f5c842",
-    dioBg: "#fffbe6",
+    diosBg: "#fffbe6",
     bibliaColor: "#6c3fc5",
     bibliaBg: "#ede8ff",
     jesusColor: "#e05b8c",

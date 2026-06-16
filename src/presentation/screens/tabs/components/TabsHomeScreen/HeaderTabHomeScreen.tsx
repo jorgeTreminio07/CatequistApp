@@ -38,7 +38,7 @@ const HeaderTabHomeScreen = () => {
         CatequistApp
       </Text>
 
-      <Text
+      {/* <Text
         className="text-xl font-bold text-white"
         style={{
           marginLeft: width * 0.07,
@@ -46,12 +46,12 @@ const HeaderTabHomeScreen = () => {
         }}
       >
         Tu camino de fe comienza aquí ✨
-      </Text>
+      </Text> */}
 
       <View
         className="flex-row justify-between"
         style={{
-          marginTop: 10,
+          marginTop: 20,
           marginHorizontal: width * 0.07,
         }}
       >

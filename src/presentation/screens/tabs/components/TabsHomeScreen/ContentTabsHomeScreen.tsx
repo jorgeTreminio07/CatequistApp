@@ -1,5 +1,6 @@
 import { useThemeColors } from "@/hooks/use-theme";
-import { ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { ScrollView, useWindowDimensions, View } from "react-native";
+import ThemeCard from "./ThemeCard";
 
 const ContentTabsHomeScreen = () => {
   const { width, height } = useWindowDimensions();
@@ -16,7 +17,7 @@ const ContentTabsHomeScreen = () => {
         style={{
           minHeight: height,
           width,
-          backgroundColor: theme.secondary,
+          backgroundColor: theme.background,
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
           paddingTop: 25,
@@ -24,38 +25,46 @@ const ContentTabsHomeScreen = () => {
           overflow: "hidden",
         }}
       >
-        <View className="items-center">
-          <Text className="text-xl font-bold text-black">
-            Catequesis themes
-          </Text>
+        <View
+          style={{
+            marginTop: 10,
+            marginHorizontal: width * 0.07,
+          }}
+        >
+          <ThemeCard
+            tittle="Quien es Dios?"
+            subTittle="Catequesis 2"
+            icon="book"
+            status="done"
+            color="biblia"
+            position="left"
+            onPress={() => {
+              console.log("hola");
+            }}
+          />
+          <ThemeCard
+            tittle="Quien es Dios?"
+            subTittle="Catequesis 1"
+            icon="home"
+            status="start"
+            color="jesus"
+            position="right"
+            onPress={() => {
+              console.log("hola");
+            }}
+          />
 
-          <Text className="text-4xl">4xl</Text>
-          <Text className="text-5xl">5xl</Text>
-          <Text className="text-6xl">6xl</Text>
-          <Text className="text-7xl">7xl</Text>
-          <Text className="text-8xl">8xl</Text>
-          <Text className="text-9xl">9xl</Text>
-
-          <Text className="text-4xl">4xl</Text>
-          <Text className="text-5xl">5xl</Text>
-          <Text className="text-6xl">6xl</Text>
-          <Text className="text-7xl">7xl</Text>
-          <Text className="text-8xl">8xl</Text>
-          <Text className="text-9xl">9xl</Text>
-
-          <Text className="text-4xl">4xl</Text>
-          <Text className="text-5xl">5xl</Text>
-          <Text className="text-6xl">6xl</Text>
-          <Text className="text-7xl">7xl</Text>
-          <Text className="text-8xl">8xl</Text>
-          <Text className="text-9xl">9xl</Text>
-
-          <Text className="text-4xl">4xl</Text>
-          <Text className="text-5xl">5xl</Text>
-          <Text className="text-6xl">6xl</Text>
-          <Text className="text-7xl">7xl</Text>
-          <Text className="text-8xl">8xl</Text>
-          <Text className="text-9xl">9xl</Text>
+          <ThemeCard
+            tittle="Quien es Dios?"
+            subTittle="Catequesis 3"
+            icon="person"
+            status="blocked"
+            position="left"
+            color="sacramentos"
+            onPress={() => {
+              console.log("hola");
+            }}
+          />
         </View>
       </View>
     </ScrollView>
