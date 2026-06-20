@@ -1,4 +1,5 @@
 import { useThemeColors } from "@/hooks/use-theme";
+import { router } from "expo-router";
 import { ScrollView, useWindowDimensions, View } from "react-native";
 import ThemeCard from "./ThemeCard";
 
@@ -39,7 +40,7 @@ const ContentTabsHomeScreen = () => {
             color="biblia"
             position="left"
             onPress={() => {
-              console.log("hola");
+              router.push("/theme/[id]");
             }}
           />
           <ThemeCard

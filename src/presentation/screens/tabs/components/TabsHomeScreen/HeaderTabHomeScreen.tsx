@@ -19,7 +19,7 @@ const HeaderTabHomeScreen = () => {
       }}
     >
       <Text
-        className="text-xl font-bold text-white"
+        className="text-xl font-geist-bold text-white"
         style={{
           marginLeft: width * 0.07,
           marginTop: height * 0.07,
@@ -29,7 +29,7 @@ const HeaderTabHomeScreen = () => {
       </Text>
 
       <Text
-        className="text-6xl font-bold text-white"
+        className="text-6xl font-geist-black text-white"
         style={{
           marginLeft: width * 0.07,
           marginTop: 5,
@@ -55,9 +55,9 @@ const HeaderTabHomeScreen = () => {
           marginHorizontal: width * 0.07,
         }}
       >
-        <Text className="text-lg font-bold text-white">Tu Progreso</Text>
+        <Text className="text-lg font-geist-bold text-white">Tu Progreso</Text>
 
-        <Text className="text-lg font-bold text-white">1/5 Temas</Text>
+        <Text className="text-lg font-geist-bold text-white">1/5 Temas</Text>
       </View>
 
       <View
@@ -68,7 +68,7 @@ const HeaderTabHomeScreen = () => {
           height: 15,
         }}
       >
-        <Text className="text-xs font-bold text-white">Barprogress</Text>
+        <Text className="text-xs font-geist-bold text-white">Barprogress</Text>
       </View>
     </LinearGradient>
   );
