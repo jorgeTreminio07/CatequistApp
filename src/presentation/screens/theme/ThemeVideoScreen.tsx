@@ -1,8 +1,9 @@
+import { useAnimation } from "@/hooks/use-animation";
 import { useThemeColors } from "@/hooks/use-theme";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import { useRef, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -12,6 +13,11 @@ import {
   View,
 } from "react-native";
 
+import { initializeDatabase } from "@/Infrastructure/database";
+import {
+  ThemeVideoData,
+  ThemeVideoRepository,
+} from "@/Infrastructure/repository/ThemeVideoRepository";
 import YoutubePlayer from "react-native-youtube-iframe";
 
 const ThemeVideoScreen = () => {
@@ -25,30 +31,76 @@ const ThemeVideoScreen = () => {
   const videoWidth = width - videoPadding;
   const videoHeight = height * 0.22;
 
-  const scaleValue = useRef(new Animated.Value(1)).current;
+  const { scaleValue, onPressIn, onPressOut } = useAnimation();
 
-  const onPressIn = () => {
-    Animated.spring(scaleValue, {
-      toValue: 0.93,
-      useNativeDriver: true,
-      bounciness: 10,
-    }).start();
-  };
+  const { id } = useLocalSearchParams();
 
-  const onPressOut = () => {
-    Animated.spring(scaleValue, {
-      toValue: 1,
-      useNativeDriver: true,
-      friction: 3,
-      tension: 40,
-    }).start();
-  };
+  console.log(id);
+  const [tema, setTema] = useState<ThemeVideoData | null>(null);
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function cargarTema() {
+      try {
+        const db = await initializeDatabase();
+        const repo = new ThemeVideoRepository(db);
+
+        console.log(`--- Buscando Tema ID: ${id} en SQLite ---`);
+
+        const temaFromDB = await repo.getThemeById(Number(id) || 0);
+
+        if (isMounted) {
+          setTema(temaFromDB);
+
+          if (temaFromDB) {
+            console.log(`¡Tema encontrado!: ${temaFromDB.themeTittle}`);
+          } else {
+            console.log("No se encontró ningún tema con ese ID.");
+          }
+        }
+      } catch (error) {
+        console.error("Error al obtener el tema de la DB:", error);
+      } finally {
+        if (isMounted) setCargando(false);
+      }
+    }
+
+    cargarTema();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  if (cargando) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#6c3fc5" />
+      </View>
+    );
+  }
+
+  if (!tema) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text>El tema solicitado no existe.</Text>
+      </View>
+    );
+  }
+
+  const activeColor = theme[
+    `${tema.color}Color` as keyof typeof theme
+  ] as string;
+  const activeBg = theme[`${tema.color}Bg` as keyof typeof theme] as string;
 
   return (
     <View
       className="flex-1"
       style={{ height, backgroundColor: theme.background }}
     >
+      {/*header*/}
       <LinearGradient
         colors={[theme.gradientPrimary[0], theme.gradientPrimary[1]]}
         start={{ x: 0, y: 0 }}
@@ -79,18 +131,18 @@ const ThemeVideoScreen = () => {
 
           <View className="flex-row items-center">
             <View
-              className="items-center justify-center rounded-3xl"
+              className="items-center justify-center rounded-full"
               style={{
-                backgroundColor: theme.secondary,
+                backgroundColor: activeColor,
                 height: height * 0.07,
                 width: width * 0.15,
                 marginLeft: width * 0.02,
               }}
             >
-              <Ionicons name="accessibility-outline" size={20} color="white" />
+              <Ionicons name={tema.icon} size={20} color="white" />
             </View>
             <View
-              className="flex-1 justify-between"
+              className="flex-1"
               style={{
                 marginLeft: width * 0.05,
                 height: height * 0.07,
@@ -98,16 +150,16 @@ const ThemeVideoScreen = () => {
               }}
             >
               <Text className="text-sm font-geist-extra-light-italic text-white">
-                numero de tema
+                Tema {tema.themeId}
               </Text>
-              <Text className="text-3xl font-geist-black text-white">
-                quien es Dios?
+              <Text className="text-2xl font-geist-black text-white">
+                {tema.themeTittle}
               </Text>
             </View>
           </View>
         </View>
       </LinearGradient>
-
+      {/*video*/}
       <View
         className="items-center"
         style={{
@@ -140,7 +192,7 @@ const ThemeVideoScreen = () => {
           />
         </View>
       </View>
-
+      {/*explicacion*/}
       <View
         className="items-center"
         style={{
@@ -156,12 +208,12 @@ const ThemeVideoScreen = () => {
             height: height * 0.39,
             paddingVertical: height * 0.02,
             paddingHorizontal: width * 0.03,
-            backgroundColor: theme.secondary,
-            borderColor: theme.primary,
+            backgroundColor: activeBg,
+            borderColor: activeColor,
           }}
         >
           <View className="flex-row items-center" style={{ marginBottom: 10 }}>
-            <Ionicons name="play-outline" size={20} />
+            <Ionicons name="play-outline" size={20} color={activeColor} />
             <Text className="font-geist-extra-light-italic">
               Sobre este Tema
             </Text>
@@ -170,15 +222,12 @@ const ThemeVideoScreen = () => {
             className="font-geist-black text-4xl"
             style={{ marginBottom: 5 }}
           >
-            contenttittle
+            {tema.themeTittle}
           </Text>
-          <Text className="font-geist-light text-xl">
-            Conoce a tu Padre Celestial. Mira el video completo y luego responde
-            las preguntas para completar este tema y desbloquear el siguiente.
-          </Text>
+          <Text className="font-geist-light text-xl">{tema.content}</Text>
         </View>
       </View>
-
+      {/*boton*/}
       <View
         className="items-end "
         style={{

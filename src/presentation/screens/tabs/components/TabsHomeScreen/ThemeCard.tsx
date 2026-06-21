@@ -5,12 +5,12 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRef } from "react";
 
 import {
-    Animated,
-    Pressable,
-    PressableProps,
-    Text,
-    useWindowDimensions,
-    View,
+  Animated,
+  Pressable,
+  PressableProps,
+  Text,
+  useWindowDimensions,
+  View,
 } from "react-native";
 
 type Status = "start" | "blocked" | "done";
@@ -66,17 +66,17 @@ const ThemeCard = ({
     >
       <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
         <Pressable
-          className="flex-row items-center justify-start border-2"
+          className="flex-row items-center border-2"
           style={{
             width: width * 0.7,
-            height: height * 0.08,
-            padding: 20,
-            borderColor: status === "blocked" ? "gray" : activeColor,
-            backgroundColor: status === "blocked" ? "#e5e7eb" : activeBg,
-            marginBottom: 50,
+            height: height * 0.09,
+            paddingHorizontal: 16,
+            borderColor: status === "blocked" ? "#cbd5e1" : activeColor,
+            backgroundColor: status === "blocked" ? "#f1f5f9" : activeBg,
+            marginBottom: 40,
             borderRadius: 20,
           }}
-          onPressIn={onPressIn} // Se ejecuta apenas pones el dedo
+          onPressIn={onPressIn}
           onPressOut={onPressOut}
           onPress={props.onPress}
           disabled={status === "blocked"}
@@ -84,42 +84,55 @@ const ThemeCard = ({
           <View
             className="items-center justify-center rounded-full"
             style={{
-              backgroundColor: status === "blocked" ? "gray" : activeColor,
-              height: height * 0.05,
-              width: width * 0.11,
+              backgroundColor: status === "blocked" ? "#94a3b8" : activeColor,
+              height: 42,
+              width: 42,
             }}
           >
-            <Text>
-              <Ionicons
-                name={status === "blocked" ? "close-outline" : icon}
-                size={20}
-                color="white"
-              />
+            <Ionicons
+              name={status === "blocked" ? "lock-closed" : icon}
+              size={20}
+              color="white"
+            />
+          </View>
+
+          <View style={{ flex: 1, marginLeft: 12, marginRight: 8 }}>
+            <Text
+              className="font-bold text-sm"
+              numberOfLines={1}
+              style={{
+                color: status === "blocked" ? "#64748b" : theme.foreground,
+              }}
+            >
+              {tittle}
+            </Text>
+            <Text className="text-xs color-gray-500" numberOfLines={1}>
+              {subTittle}
             </Text>
           </View>
+
           <View
-            className="justify-start"
-            style={{ marginLeft: width * 0.1 * 0.3 }}
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              width: 32,
+            }}
           >
-            <Text className="font-bold text-sm">{tittle}</Text>
-            <Text className=" color-gray-500">{subTittle}</Text>
-          </View>
-          <View style={{ marginLeft: width * 0.6 * 0.3 }}>
             {status === "start" && (
               <MaterialCommunityIcons
                 name="star-circle-outline"
-                size={30}
+                size={28}
                 color={activeColor}
               />
             )}
             {status === "blocked" && (
-              <Feather name="lock" size={30} color="gray" />
+              <Feather name="lock" size={22} color="#94a3b8" />
             )}
             {status === "done" && (
               <Ionicons
-                name="checkmark-done-circle-outline"
-                size={30}
-                color={theme.success}
+                name="checkmark-done-circle"
+                size={28}
+                color={theme.success || "#2bb87a"}
               />
             )}
           </View>

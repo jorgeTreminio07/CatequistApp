@@ -2,9 +2,21 @@ import { useThemeColors } from "@/hooks/use-theme";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text, useWindowDimensions, View } from "react-native";
 
-const HeaderTabHomeScreen = () => {
+interface HeaderTabHomeScreenProps {
+  countThemes: number;
+  countThemesDone: number;
+}
+
+const HeaderTabHomeScreen = ({
+  countThemes,
+  countThemesDone,
+}: HeaderTabHomeScreenProps) => {
   const { width, height } = useWindowDimensions();
   const theme = useThemeColors();
+
+  const total = countThemes || 1;
+  const porcentaje = Math.min((countThemesDone / total) * 100, 100);
+
   return (
     <LinearGradient
       colors={[theme.gradientPrimary[0], theme.gradientPrimary[1]]}
@@ -38,17 +50,6 @@ const HeaderTabHomeScreen = () => {
       >
         CatequistApp
       </Text>
-
-      {/* <Text
-        className="text-xl font-bold text-white"
-        style={{
-          marginLeft: width * 0.07,
-          marginTop: 5,
-        }}
-      >
-        Tu camino de fe comienza aquí ✨
-      </Text> */}
-
       <View
         className="flex-row justify-between"
         style={{
@@ -58,18 +59,28 @@ const HeaderTabHomeScreen = () => {
       >
         <Text className="text-lg font-geist-bold text-white">Tu Progreso</Text>
 
-        <Text className="text-lg font-geist-bold text-white">1/5 Temas</Text>
+        <Text className="text-lg font-geist-bold text-white">
+          {countThemesDone}/{countThemes} Temas
+        </Text>
       </View>
 
       <View
-        className="flex-row justify-center bg-red-500 rounded-full"
+        className="rounded-full overflow-hidden"
         style={{
           width: width - width * 0.07 * 2,
           marginHorizontal: width * 0.07,
-          height: 15,
+          marginTop: 10,
+          height: 10,
+          backgroundColor: "rgba(255, 255, 255, 0.25)",
         }}
       >
-        <Text className="text-xs font-geist-bold text-white">Barprogress</Text>
+        <View
+          className="h-full rounded-full"
+          style={{
+            width: `${porcentaje}%`,
+            backgroundColor: theme.accent || "#f5c842",
+          }}
+        />
       </View>
     </LinearGradient>
   );

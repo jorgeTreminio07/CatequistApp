@@ -1,12 +1,27 @@
 import { useThemeColors } from "@/hooks/use-theme";
+import { ThemeVideoData } from "@/Infrastructure/repository/ThemeVideoRepository";
 import { router } from "expo-router";
-import { ScrollView, useWindowDimensions, View } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import ThemeCard from "./ThemeCard";
 
-const ContentTabsHomeScreen = () => {
+interface ContentTabsHomeScreenProps {
+  listaTemas: ThemeVideoData[];
+  cargando: boolean;
+}
+
+const ContentTabsHomeScreen = ({
+  listaTemas,
+  cargando,
+}: ContentTabsHomeScreenProps) => {
   const { width, height } = useWindowDimensions();
   const theme = useThemeColors();
   const headerHeight = height * 0.28;
+
   return (
     <ScrollView
       className="flex-1"
@@ -32,40 +47,35 @@ const ContentTabsHomeScreen = () => {
             marginHorizontal: width * 0.07,
           }}
         >
-          <ThemeCard
-            tittle="Quien es Dios?"
-            subTittle="Catequesis 2"
-            icon="book"
-            status="done"
-            color="biblia"
-            position="left"
-            onPress={() => {
-              router.push("/theme/[id]");
-            }}
-          />
-          <ThemeCard
-            tittle="Quien es Dios?"
-            subTittle="Catequesis 1"
-            icon="home"
-            status="start"
-            color="jesus"
-            position="right"
-            onPress={() => {
-              console.log("hola");
-            }}
-          />
-
-          <ThemeCard
-            tittle="Quien es Dios?"
-            subTittle="Catequesis 3"
-            icon="person"
-            status="blocked"
-            position="left"
-            color="sacramentos"
-            onPress={() => {
-              console.log("hola");
-            }}
-          />
+          {cargando ? (
+            <ActivityIndicator
+              size="large"
+              color={theme.primary || "#000"}
+              style={{ marginTop: 20 }}
+            />
+          ) : (
+            listaTemas.map((tema) => (
+              <ThemeCard
+                key={tema.themeId}
+                tittle={tema.themeTittle}
+                subTittle={tema.subTittle}
+                icon={tema.icon}
+                status={tema.status}
+                color={tema.color}
+                position={tema.position}
+                onPress={() => {
+                  if (tema.status !== "blocked") {
+                    router.push({
+                      pathname: "/theme/[id]",
+                      params: { id: tema.themeId },
+                    });
+                  } else {
+                    console.log(`El tema ${tema.themeId} está bloqueado.`);
+                  }
+                }}
+              />
+            ))
+          )}
         </View>
       </View>
     </ScrollView>
