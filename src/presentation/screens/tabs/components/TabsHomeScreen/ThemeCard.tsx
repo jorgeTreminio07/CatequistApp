@@ -73,7 +73,7 @@ const ThemeCard = ({
             paddingHorizontal: 16,
             borderColor: status === "blocked" ? "#cbd5e1" : activeColor,
             backgroundColor: status === "blocked" ? "#f1f5f9" : activeBg,
-            marginBottom: 40,
+            marginBottom: 5,
             borderRadius: 20,
           }}
           onPressIn={onPressIn}
