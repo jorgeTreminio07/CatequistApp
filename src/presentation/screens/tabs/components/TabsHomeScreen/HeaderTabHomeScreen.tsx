@@ -29,9 +29,10 @@ const HeaderTabHomeScreen = () => {
       </Text>
 
       <Text
-        className="text-6xl font-geist-black text-white"
+        className="text-4xl font-geist-black text-white"
         style={{
           marginLeft: width * 0.07,
+          marginRight: width * 0.07,
           marginTop: 5,
         }}
       >

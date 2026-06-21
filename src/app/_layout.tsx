@@ -43,14 +43,21 @@ export default function RootLayout() {
   if (!fontsLoaded && !error) return null;
   return (
     <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: "#121212" },
+        }}
+      >
         <Stack.Screen name="(tabs)" />
         <Stack.Screen
           name="theme/[id]"
           options={{
-            headerShown: true,
+            headerShown: false,
             title: "",
+            //animation: "slide_from_right",
             headerShadowVisible: false,
+            animation: "fade",
           }}
         />
       </Stack>
