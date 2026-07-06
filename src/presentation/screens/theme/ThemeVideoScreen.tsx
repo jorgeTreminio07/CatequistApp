@@ -2,7 +2,7 @@ import { useAnimation } from "@/hooks/use-animation";
 import { useThemeColors } from "@/hooks/use-theme";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -189,6 +189,12 @@ const ThemeVideoScreen = () => {
             }}
             onPressIn={onPressIn}
             onPressOut={onPressOut}
+            onPress={() =>
+              router.push({
+                pathname: "/form/[id]",
+                params: { id: id.toString() },
+              })
+            }
           >
             <LinearGradient
               colors={[theme.gradientPrimary[0], theme.gradientPrimary[1]]}

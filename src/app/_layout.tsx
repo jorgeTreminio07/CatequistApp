@@ -54,7 +54,15 @@ export default function RootLayout() {
           options={{
             headerShown: false,
             title: "",
-            //animation: "slide_from_right",
+            headerShadowVisible: false,
+            animation: "fade",
+          }}
+        />
+        <Stack.Screen
+          name="form/[id]"
+          options={{
+            headerShown: false,
+            title: "",
             headerShadowVisible: false,
             animation: "fade",
           }}
