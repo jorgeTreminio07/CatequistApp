@@ -27,6 +27,7 @@ const FormThemeScreen = () => {
   const porcentaje = Math.min((questionNumber / totalQuestions) * 100, 100);
 
   // --- ESTADOS PARA RENDEREADO Y VALIDACIÓN ---
+  const [shuffledQuestionsList, setShuffledQuestionsList] = useState<any[]>([]);
   const [currentQuestionText, setCurrentQuestionText] = useState("");
   const [shuffledOptions, setShuffledOptions] = useState<
     { texto: string; esCorrecta: boolean }[]
@@ -36,21 +37,35 @@ const FormThemeScreen = () => {
   );
   const [hasAnswered, setHasAnswered] = useState(false);
 
-  // --- NUEVO ESTADO: CONTADOR DE ACIERTOS ---
+  // --- ESTADO: CONTADOR DE ACIERTOS ---
   const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
 
-  // Carga dinámica de preguntas y mezcla de opciones usando getThemeData
+  // EFECTO 1: Carga inicial y mezcla general de todas las preguntas (Solo se ejecuta al montar la pantalla)
   useEffect(() => {
     const selectedThemeData = getThemeData(currentThemeId);
-    const rawPreguntas = selectedThemeData?.comunion?.preguntas || [];
-    const preguntaActualData = rawPreguntas.find(
-      (q: any) => q.numero_pregunta === questionNumber,
-    );
+    const rawPreguntas = [...(selectedThemeData?.comunion?.preguntas || [])];
+
+    // Mezclado Fisher-Yates para el orden de las preguntas
+    for (let i = rawPreguntas.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [rawPreguntas[i], rawPreguntas[j]] = [rawPreguntas[j], rawPreguntas[i]];
+    }
+
+    // Guardamos la lista desordenada y limitamos a la cantidad total de preguntas configuradas
+    setShuffledQuestionsList(rawPreguntas.slice(0, totalQuestions));
+  }, [currentThemeId]);
+
+  // EFECTO 2: Carga y mezcla las opciones de la pregunta actual basándose en la lista desordenada
+  useEffect(() => {
+    if (shuffledQuestionsList.length === 0) return;
+
+    // Tomamos la pregunta usando el índice actual (questionNumber - 1)
+    const preguntaActualData = shuffledQuestionsList[questionNumber - 1];
 
     if (preguntaActualData) {
       setCurrentQuestionText(preguntaActualData.pregunta);
 
-      // Mapeamos guardando explícitamente cuál es la correcta antes de barajar
+      // Mapeamos las opciones guardando cuál es la correcta
       const opcionesArray = Object.entries(preguntaActualData.opciones).map(
         ([clave, texto]) => ({
           texto: texto as string,
@@ -58,7 +73,7 @@ const FormThemeScreen = () => {
         }),
       );
 
-      // Mezclado Fisher-Yates
+      // Mezclado Fisher-Yates para el orden de las opciones de esta pregunta
       for (let i = opcionesArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [opcionesArray[i], opcionesArray[j]] = [
@@ -71,15 +86,14 @@ const FormThemeScreen = () => {
       setSelectedOptionIndex(null);
       setHasAnswered(false);
     }
-  }, [questionNumber, currentThemeId]);
+  }, [questionNumber, shuffledQuestionsList]);
 
   // Manejador al presionar una opción
   const handleSelectOption = (index: number) => {
-    if (hasAnswered) return; // Bloquea múltiples selecciones por pregunta
+    if (hasAnswered) return;
     setSelectedOptionIndex(index);
     setHasAnswered(true);
 
-    // Si la opción seleccionada es la correcta, sumamos al contador e imprimimos en log
     if (shuffledOptions[index]?.esCorrecta) {
       setCorrectAnswersCount((prev) => {
         const newCount = prev + 1;
@@ -87,7 +101,6 @@ const FormThemeScreen = () => {
         return newCount;
       });
     } else {
-      // Dejamos el log actual incluso si falla para monitoreo
       console.log(
         `Respuesta incorrecta. Total correctas: ${correctAnswersCount}`,
       );
@@ -300,7 +313,6 @@ const FormThemeScreen = () => {
           <Animated.View
             style={{
               transform: [{ scale: scaleValue }],
-              // CAMBIO VISUAL: Si no ha respondido, el contenedor se ve opaco/deshabilitado
               opacity: hasAnswered ? 1 : 0.5,
             }}
           >
@@ -311,11 +323,9 @@ const FormThemeScreen = () => {
                 height: height * 0.06,
                 borderRadius: 28,
               }}
-              // CAMBIO DE ANIMACIÓN: Bloquea las escalas táctiles si está deshabilitado
               onPressIn={hasAnswered ? onPressIn : undefined}
               onPressOut={hasAnswered ? onPressOut : undefined}
               onPress={() => {
-                // BLOQUEO DE ACCIÓN: Si no ha seleccionado opción, no hace nada
                 if (!hasAnswered) return;
 
                 if (questionNumber < totalQuestions) {
