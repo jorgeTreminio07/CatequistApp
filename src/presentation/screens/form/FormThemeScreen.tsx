@@ -3,7 +3,7 @@ import { useThemeColors } from "@/hooks/use-theme";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Animated,
   Pressable,
@@ -12,14 +12,121 @@ import {
   View,
 } from "react-native";
 
+// Importación del archivo proveedor/router de temas
+import { getThemeData } from "../../../Infrastructure/formData/theme-provider";
+
 const FormThemeScreen = () => {
   const { id } = useLocalSearchParams();
+  const currentThemeId = Array.isArray(id) ? id[0] : id || "1";
+
   const { width, height } = useWindowDimensions();
   const theme = useThemeColors();
   const { scaleValue, onPressIn, onPressOut } = useAnimation();
   const [questionNumber, setQuestionNumber] = useState(1);
   const totalQuestions = 10;
   const porcentaje = Math.min((questionNumber / totalQuestions) * 100, 100);
+
+  // --- ESTADOS PARA RENDEREADO Y VALIDACIÓN ---
+  const [currentQuestionText, setCurrentQuestionText] = useState("");
+  const [shuffledOptions, setShuffledOptions] = useState<
+    { texto: string; esCorrecta: boolean }[]
+  >([]);
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(
+    null,
+  );
+  const [hasAnswered, setHasAnswered] = useState(false);
+
+  // --- NUEVO ESTADO: CONTADOR DE ACIERTOS ---
+  const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+
+  // Carga dinámica de preguntas y mezcla de opciones usando getThemeData
+  useEffect(() => {
+    const selectedThemeData = getThemeData(currentThemeId);
+    const rawPreguntas = selectedThemeData?.comunion?.preguntas || [];
+    const preguntaActualData = rawPreguntas.find(
+      (q: any) => q.numero_pregunta === questionNumber,
+    );
+
+    if (preguntaActualData) {
+      setCurrentQuestionText(preguntaActualData.pregunta);
+
+      // Mapeamos guardando explícitamente cuál es la correcta antes de barajar
+      const opcionesArray = Object.entries(preguntaActualData.opciones).map(
+        ([clave, texto]) => ({
+          texto: texto as string,
+          esCorrecta: clave === preguntaActualData.respuesta_correcta,
+        }),
+      );
+
+      // Mezclado Fisher-Yates
+      for (let i = opcionesArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [opcionesArray[i], opcionesArray[j]] = [
+          opcionesArray[j],
+          opcionesArray[i],
+        ];
+      }
+
+      setShuffledOptions(opcionesArray);
+      setSelectedOptionIndex(null);
+      setHasAnswered(false);
+    }
+  }, [questionNumber, currentThemeId]);
+
+  // Manejador al presionar una opción
+  const handleSelectOption = (index: number) => {
+    if (hasAnswered) return; // Bloquea múltiples selecciones por pregunta
+    setSelectedOptionIndex(index);
+    setHasAnswered(true);
+
+    // Si la opción seleccionada es la correcta, sumamos al contador e imprimimos en log
+    if (shuffledOptions[index]?.esCorrecta) {
+      setCorrectAnswersCount((prev) => {
+        const newCount = prev + 1;
+        console.log(`Respuestas correctas acumuladas: ${newCount}`);
+        return newCount;
+      });
+    } else {
+      // Dejamos el log actual incluso si falla para monitoreo
+      console.log(
+        `Respuesta incorrecta. Total correctas: ${correctAnswersCount}`,
+      );
+    }
+  };
+
+  // Función auxiliar para calcular los estilos y contenidos dinámicos de cada opción
+  const getOptionState = (index: number) => {
+    const opcion = shuffledOptions[index];
+    const letra = ["A", "B", "C", "D"][index];
+
+    let borderColor: string = theme.primary;
+    let badgeBgColor: string = theme.primary;
+
+    let iconName: "checkmark-circle" | "close-circle" | null = null;
+    let iconColor = "white";
+
+    if (hasAnswered && opcion) {
+      if (opcion.esCorrecta) {
+        borderColor = theme.success;
+        badgeBgColor = theme.success;
+        iconName = "checkmark-circle";
+      } else if (selectedOptionIndex === index && !opcion.esCorrecta) {
+        borderColor = theme.error;
+        badgeBgColor = theme.error;
+        iconName = "close-circle";
+      }
+    }
+
+    return {
+      borderColor,
+      iconName,
+      iconColor,
+      badgeBgColor,
+      letra,
+      texto: opcion?.texto || "",
+    };
+  };
+
   return (
     <View
       className="flex-1"
@@ -64,7 +171,7 @@ const FormThemeScreen = () => {
               {questionNumber}/{totalQuestions}
             </Text>
           </View>
-          {/* 2. Barra de Progreso */}
+          {/* Barra de Progreso */}
           <View
             className="rounded-full overflow-hidden"
             style={{
@@ -85,7 +192,8 @@ const FormThemeScreen = () => {
           </View>
         </View>
       </LinearGradient>
-      {/* 2. Contenido */}
+
+      {/* Contenido */}
       <View
         className="items-center"
         style={{
@@ -118,117 +226,68 @@ const FormThemeScreen = () => {
               Pregunta {questionNumber}
             </Text>
             <Text className="text-xl font-geist-bold">
-              contenido pregunta {questionNumber}
+              {currentQuestionText}
             </Text>
           </View>
 
-          <View
-            className="bg-white rounded-3xl border-2 flex-row justify-start items-center"
-            style={{
-              width: width - width * 0.06 * 2 - width * 0.03 * 2,
-              marginHorizontal: width * 0.03,
-              marginTop: height * 0.02,
-              height: height * 0.1,
-              paddingVertical: height * 0.02,
-              paddingHorizontal: width * 0.03,
-              backgroundColor: "white",
-              borderColor: theme.primary,
-              shadowColor: "#000",
-              shadowOpacity: 0.1,
-              shadowRadius: 8,
-              shadowOffset: { width: 0, height: 4 },
-              elevation: 5,
-            }}
-          >
-            <View
-              className="rounded-full justify-center items-center mr-4"
-              style={{ backgroundColor: theme.primary, width: 40, height: 40 }}
-            >
-              <Text className="text-lg font-geist-bold text-white">A</Text>
-            </View>
+          {/* Renderizado de Opciones */}
+          {[0, 1, 2, 3].map((index) => {
+            const optState = getOptionState(index);
+            return (
+              <Pressable
+                key={index}
+                onPress={() => handleSelectOption(index)}
+                className="bg-white rounded-3xl border-2 flex-row justify-between items-center"
+                style={{
+                  width: width - width * 0.06 * 2 - width * 0.03 * 2,
+                  marginHorizontal: width * 0.03,
+                  marginTop: height * 0.02,
+                  height: height * 0.1,
+                  paddingVertical: height * 0.02,
+                  paddingHorizontal: width * 0.03,
+                  backgroundColor: "white",
+                  borderColor: optState.borderColor,
+                  shadowColor: "#000",
+                  shadowOpacity: 0.1,
+                  shadowRadius: 8,
+                  shadowOffset: { width: 0, height: 4 },
+                  elevation: 5,
+                }}
+              >
+                <View className="flex-row items-center flex-1 pr-2">
+                  <View
+                    className="rounded-full justify-center items-center mr-4"
+                    style={{
+                      backgroundColor: optState.badgeBgColor,
+                      width: 40,
+                      height: 40,
+                    }}
+                  >
+                    <Text className="text-lg font-geist-bold text-white">
+                      {optState.letra}
+                    </Text>
+                  </View>
+                  <Text
+                    className="text-lg font-geist-bold flex-1"
+                    numberOfLines={2}
+                  >
+                    {optState.texto}
+                  </Text>
+                </View>
 
-            <Text className="text-lg font-geist-bold">caja 2</Text>
-          </View>
-          <View
-            className="bg-white rounded-3xl border-2 flex-row justify-start items-center"
-            style={{
-              width: width - width * 0.06 * 2 - width * 0.03 * 2,
-              marginHorizontal: width * 0.03,
-              marginTop: height * 0.02,
-              height: height * 0.1,
-              paddingVertical: height * 0.02,
-              paddingHorizontal: width * 0.03,
-              backgroundColor: "white",
-              borderColor: theme.primary,
-              shadowColor: "#000",
-              shadowOpacity: 0.1,
-              shadowRadius: 8,
-              shadowOffset: { width: 0, height: 4 },
-              elevation: 5,
-            }}
-          >
-            <View
-              className="rounded-full justify-center items-center mr-4"
-              style={{ backgroundColor: theme.primary, width: 40, height: 40 }}
-            >
-              <Text className="text-lg font-geist-bold text-white">B</Text>
-            </View>
-            <Text className="text-lg font-geist-bold">caja 3</Text>
-          </View>
-          <View
-            className="bg-white rounded-3xl border-2 flex-row justify-start items-center"
-            style={{
-              width: width - width * 0.06 * 2 - width * 0.03 * 2,
-              marginHorizontal: width * 0.03,
-              marginTop: height * 0.02,
-              height: height * 0.1,
-              paddingVertical: height * 0.02,
-              paddingHorizontal: width * 0.03,
-              backgroundColor: "white",
-              borderColor: theme.primary,
-              shadowColor: "#000",
-              shadowOpacity: 0.1,
-              shadowRadius: 8,
-              shadowOffset: { width: 0, height: 4 },
-              elevation: 5,
-            }}
-          >
-            <View
-              className="rounded-full justify-center items-center mr-4"
-              style={{ backgroundColor: theme.primary, width: 40, height: 40 }}
-            >
-              <Text className="text-lg font-geist-bold text-white">C</Text>
-            </View>
-            <Text className="text-lg font-geist-bold">caja 4</Text>
-          </View>
-          <View
-            className="bg-white rounded-3xl border-2 flex-row justify-start items-center"
-            style={{
-              width: width - width * 0.06 * 2 - width * 0.03 * 2,
-              marginHorizontal: width * 0.03,
-              marginTop: height * 0.02,
-              height: height * 0.1,
-              paddingVertical: height * 0.02,
-              paddingHorizontal: width * 0.03,
-              backgroundColor: "white",
-              borderColor: theme.primary,
-              shadowColor: "#000",
-              shadowOpacity: 0.1,
-              shadowRadius: 8,
-              shadowOffset: { width: 0, height: 4 },
-              elevation: 5,
-            }}
-          >
-            <View
-              className="rounded-full justify-center items-center mr-4"
-              style={{ backgroundColor: theme.primary, width: 40, height: 40 }}
-            >
-              <Text className="text-lg font-geist-bold text-white">D</Text>
-            </View>
-            <Text className="text-lg font-geist-bold">caja 5</Text>
-          </View>
+                {optState.iconName && (
+                  <Ionicons
+                    name={optState.iconName}
+                    size={24}
+                    color={optState.borderColor}
+                  />
+                )}
+              </Pressable>
+            );
+          })}
         </View>
-        {/* 3. boton */}
+
+        {/* Botón de acción */}
         <View
           className="items-end "
           style={{
@@ -238,7 +297,13 @@ const FormThemeScreen = () => {
             paddingHorizontal: width * 0.06,
           }}
         >
-          <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+          <Animated.View
+            style={{
+              transform: [{ scale: scaleValue }],
+              // CAMBIO VISUAL: Si no ha respondido, el contenedor se ve opaco/deshabilitado
+              opacity: hasAnswered ? 1 : 0.5,
+            }}
+          >
             <Pressable
               className="items-center justify-center flex-row overflow-hidden"
               style={{
@@ -246,11 +311,20 @@ const FormThemeScreen = () => {
                 height: height * 0.06,
                 borderRadius: 28,
               }}
-              onPressIn={onPressIn}
-              onPressOut={onPressOut}
-              onPress={() =>
-                setQuestionNumber((prev) => Math.min(prev + 1, totalQuestions))
-              }
+              // CAMBIO DE ANIMACIÓN: Bloquea las escalas táctiles si está deshabilitado
+              onPressIn={hasAnswered ? onPressIn : undefined}
+              onPressOut={hasAnswered ? onPressOut : undefined}
+              onPress={() => {
+                // BLOQUEO DE ACCIÓN: Si no ha seleccionado opción, no hace nada
+                if (!hasAnswered) return;
+
+                if (questionNumber < totalQuestions) {
+                  setQuestionNumber((prev) => prev + 1);
+                } else {
+                  router.dismissAll();
+                  router.replace("/");
+                }
+              }}
             >
               <LinearGradient
                 colors={[theme.gradientPrimary[0], theme.gradientPrimary[1]]}
@@ -266,7 +340,7 @@ const FormThemeScreen = () => {
               />
 
               <Text className="text-2xl font-geist-bold text-white z-10">
-                Siguiente
+                {questionNumber < totalQuestions ? "Siguiente" : "Finalizar"}
               </Text>
               <Ionicons
                 name="chevron-forward"

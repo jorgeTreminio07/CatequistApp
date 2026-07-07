@@ -1,0 +1,117 @@
+{
+  "comunion": {
+    "tema": 1,
+    "preguntas": [
+      {
+        "numero_pregunta": 1,
+        "pregunta": "¿Quién es Dios?",
+        "opciones": {
+          "a": "Un hombre sabio del pasado",
+          "b": "Nuestro Padre Celestial, creador del cielo y de la tierra",
+          "c": "Un personaje de una historia antigua",
+          "d": "Una fuerza de la naturaleza"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 2,
+        "pregunta": "¿Cómo demostró Dios que nos ama muchísimo?",
+        "opciones": {
+          "a": "Enviando a su Hijo Jesús para salvarnos",
+          "b": "Dejándonos hacer lo que queramos",
+          "c": "Ocultándose en el cielo",
+          "d": "Haciendo milagros solo en el pasado"
+        },
+        "respuesta_correcta": "a"
+      },
+      {
+        "numero_pregunta": 3,
+        "pregunta": "¿Dónde podemos leer la palabra de Dios y conocer su historia?",
+        "opciones": {
+          "a": "En un libro de ciencias",
+          "b": "En internet únicamente",
+          "c": "En la Sagrada Biblia",
+          "d": "En un diccionario"
+        },
+        "respuesta_correcta": "c"
+      },
+      {
+        "numero_pregunta": 4,
+        "pregunta": "¿Cuántos dioses verdaderos existen?",
+        "opciones": {
+          "a": "Muchos, uno para cada país",
+          "b": "No existe ninguno",
+          "c": "Dos dioses diferentes",
+          "d": "Uno solo, que es la Santísima Trinidad"
+        },
+        "respuesta_correcta": "d"
+      },
+      {
+        "numero_pregunta": 5,
+        "pregunta": "¿Qué significa que Dios es 'Omnipresente'?",
+        "opciones": {
+          "a": "Que lo sabe todo",
+          "b": "Que puede hacerlo todo",
+          "c": "Que está en todas partes al mismo tiempo",
+          "d": "Que es muy anciano"
+        },
+        "respuesta_correcta": "c"
+      },
+      {
+        "numero_pregunta": 6,
+        "pregunta": "¿Cómo podemos hablar nosotros con Dios?",
+        "opciones": {
+          "a": "A través de la oración",
+          "b": "Por medio de un teléfono celular",
+          "c": "Escribiendo una carta en papel",
+          "d": "No podemos hablar con Él"
+        },
+        "respuesta_correcta": "a"
+      },
+      {
+        "numero_pregunta": 7,
+        "pregunta": "¿Quiénes componen las tres Personas de la Santísima Trinidad?",
+        "opciones": {
+          "a": "Padre, Hijo y Espíritu Santo",
+          "b": "Jesús, María y José",
+          "c": "Pedro, Juan y Santiago",
+          "d": "Los ángeles, los santos y los hombres"
+        },
+        "respuesta_correcta": "a"
+      },
+      {
+        "numero_pregunta": 8,
+        "pregunta": "¿Por qué Dios creó el mundo y a los seres humanos?",
+        "opciones": {
+          "a": "Por puro amor, para compartir su felicidad con nosotros",
+          "b": "Porque se sentía aburrido",
+          "c": "Para ver cómo nos equivocamos",
+          "d": "Por casualidad"
+        },
+        "respuesta_correcta": "a"
+      },
+      {
+        "numero_pregunta": 9,
+        "pregunta": "¿Dónde habita Dios principalmente en la Tierra de una forma muy especial?",
+        "opciones": {
+          "a": "En los museos antiguos",
+          "b": "En el Sagrario de la Iglesia y en el corazón de los bautizados",
+          "c": "En las nubes más altas",
+          "d": "Solo en las montañas"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 10,
+        "pregunta": "¿Qué nos pide Dios que hagamos con las demás personas?",
+        "opciones": {
+          "a": "Que las ignoremos si no nos caen bien",
+          "b": "Que compitamos para ser mejores que ellos",
+          "c": "Que las amemos como Él nos ama a nosotros",
+          "d": "Que les hablemos solo cuando necesitemos algo"
+        },
+        "respuesta_correcta": "c"
+      }
+    ]
+  }
+}
