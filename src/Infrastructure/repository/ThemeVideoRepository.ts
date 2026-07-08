@@ -30,6 +30,18 @@ export class ThemeVideoRepository {
     this.db = db;
   }
 
+  async setStatusDone(themeId: number): Promise<void> {
+    try {
+      const query = "UPDATE themes SET status = 'done' WHERE themeId = ?;";
+      await this.db.runAsync(query, [themeId]);
+      const queryTwo = "UPDATE themes SET status = 'start' WHERE themeId = ?;";
+      await this.db.runAsync(queryTwo, [themeId + 1]);
+    } catch (error) {
+      console.error("Error al actualizar el estado del tema:", error);
+      throw error;
+    }
+  }
+
   async countThemesDone(): Promise<number> {
     try {
       const query =

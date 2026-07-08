@@ -13,11 +13,15 @@ import {
 } from "react-native";
 
 // Importación del archivo proveedor/router de temas
+import { ThemeVideoRepository } from "@/Infrastructure/repository/ThemeVideoRepository";
+import { useSQLiteContext } from "expo-sqlite";
 import { getThemeData } from "../../../Infrastructure/formData/theme-provider";
 
 const FormThemeScreen = () => {
   const { id } = useLocalSearchParams();
   const currentThemeId = Array.isArray(id) ? id[0] : id || "1";
+
+  const db = useSQLiteContext();
 
   const { width, height } = useWindowDimensions();
   const theme = useThemeColors();
@@ -138,6 +142,31 @@ const FormThemeScreen = () => {
       letra,
       texto: opcion?.texto || "",
     };
+  };
+
+  const handleButton = async () => {
+    if (!hasAnswered) return;
+
+    if (questionNumber < totalQuestions) {
+      setQuestionNumber((prev) => prev + 1);
+    } else {
+      if (correctAnswersCount > 8) {
+        try {
+          const repository = new ThemeVideoRepository(db);
+          const idNumerico = Number(id);
+
+          await repository.setStatusDone(idNumerico);
+
+          console.log(`Tema actualizado a 'done'. ID: ${idNumerico}`);
+        } catch (error) {
+          console.error("No se pudo guardar el progreso en SQLite:", error);
+        }
+      }
+      router.push({
+        pathname: "/form/result",
+        params: { id: id, correctAnswers: correctAnswersCount },
+      });
+    }
   };
 
   return (
@@ -326,14 +355,7 @@ const FormThemeScreen = () => {
               onPressIn={hasAnswered ? onPressIn : undefined}
               onPressOut={hasAnswered ? onPressOut : undefined}
               onPress={() => {
-                if (!hasAnswered) return;
-
-                if (questionNumber < totalQuestions) {
-                  setQuestionNumber((prev) => prev + 1);
-                } else {
-                  router.dismissAll();
-                  router.replace("/");
-                }
+                handleButton();
               }}
             >
               <LinearGradient

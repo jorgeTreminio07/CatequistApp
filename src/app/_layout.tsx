@@ -59,7 +59,7 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
-          name="form/[id]"
+          name="form"
           options={{
             headerShown: false,
             title: "",
