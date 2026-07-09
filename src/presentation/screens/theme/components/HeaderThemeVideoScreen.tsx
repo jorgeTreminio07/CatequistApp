@@ -41,7 +41,7 @@ const HeaderThemeVideoScreen = ({
           }}
           className="flex-row items-center active:opacity-70"
           onPress={() => {
-            router.back();
+            router.push("/(tabs)");
           }}
         >
           <Ionicons name="chevron-back" size={26} color="white" />

@@ -192,7 +192,10 @@ const FormThemeScreen = () => {
           <Pressable
             className="flex-row items-center active:opacity-70"
             onPress={() => {
-              router.back();
+              router.push({
+                pathname: "/theme/[id]",
+                params: { id: id.toString() },
+              });
             }}
           >
             <Ionicons name="chevron-back" size={26} color="white" />
@@ -372,7 +375,7 @@ const FormThemeScreen = () => {
               />
 
               <Text className="text-2xl font-geist-bold text-white z-10">
-                {questionNumber < totalQuestions ? "Siguiente" : "Finalizar"}
+                {questionNumber < totalQuestions ? "Siguiente" : "Resultados"}
               </Text>
               <Ionicons
                 name="chevron-forward"

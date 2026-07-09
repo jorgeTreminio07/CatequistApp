@@ -34,8 +34,18 @@ export class ThemeVideoRepository {
     try {
       const query = "UPDATE themes SET status = 'done' WHERE themeId = ?;";
       await this.db.runAsync(query, [themeId]);
-      const queryTwo = "UPDATE themes SET status = 'start' WHERE themeId = ?;";
-      await this.db.runAsync(queryTwo, [themeId + 1]);
+      const queryViewNextTheme = "SELECT status FROM themes WHERE themeId = ?;";
+      const result = await this.db.getFirstAsync<{ status: string }>(
+        queryViewNextTheme,
+        [themeId + 1],
+      );
+      if (result?.status === "blocked") {
+        const queryTwo =
+          "UPDATE themes SET status = 'start' WHERE themeId = ?;";
+        await this.db.runAsync(queryTwo, [themeId + 1]);
+      } else {
+        console.log("El siguiente tema ya está desbloqueado o no existe.");
+      }
     } catch (error) {
       console.error("Error al actualizar el estado del tema:", error);
       throw error;
