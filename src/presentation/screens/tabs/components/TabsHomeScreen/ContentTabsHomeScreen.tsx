@@ -22,7 +22,7 @@ const ContentTabsHomeScreen = ({
 }: ContentTabsHomeScreenProps) => {
   const { width, height } = useWindowDimensions();
   const theme = useThemeColors();
-  const headerHeight = height * 0.28;
+  const headerHeight = height * 0.25;
 
   // Cálculos de maquetación para centrar las líneas perfectamente
   const paddingContenedor = width * 0.07;
