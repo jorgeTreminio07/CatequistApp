@@ -3,13 +3,18 @@ import { ThemeVideoData } from "@/Infrastructure/repository/ThemeVideoRepository
 import { router } from "expo-router";
 import {
   ActivityIndicator,
+  Pressable,
   ScrollView,
+  Text,
   useWindowDimensions,
   View,
 } from "react-native";
 import ThemeCard from "./ThemeCard";
 
+import { useState } from "react";
+import Animated from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
+import { useSegmentedAnimation } from "../../hooks/useSegmentedAnimation";
 
 interface ContentTabsHomeScreenProps {
   listaTemas: ThemeVideoData[];
@@ -35,6 +40,17 @@ const ContentTabsHomeScreen = ({
 
   const altoSvg = 40;
 
+  // 1. Estado local y opciones puramente para mover el botón visualmente
+  const options = ["Comunion", "Confirmacion"];
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // 2. Ejecución de tu hook de animación
+  const { containerWidth, containerHeight, buttonWidth, animatedStyle } =
+    useSegmentedAnimation({
+      activeIndex,
+      buttonCount: options.length,
+    });
+
   return (
     <ScrollView
       className="flex-1"
@@ -49,11 +65,89 @@ const ContentTabsHomeScreen = ({
           backgroundColor: theme.background,
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
-          paddingTop: 25,
+          paddingTop: 0,
           paddingBottom: 100,
           overflow: "hidden",
         }}
       >
+        <View
+          className="flex-row justify-center items-center overflow-hidden"
+          style={{
+            marginBottom: 25, // Un pelín más de espacio para que luzca la sombra
+            width: containerWidth,
+            height: containerHeight,
+            backgroundColor: theme.secondary, // 👈 Fondo del contenedor igual al TabBar
+            borderBottomLeftRadius: 30,
+            borderBottomRightRadius: 30,
+
+            // 👇 Sombras del contenedor principal (Igual al TabBar original)
+            shadowColor: "#000",
+            shadowOpacity: 0.08,
+            shadowRadius: 10,
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+            elevation: 8,
+          }}
+        >
+          {/* Cápsula deslizante */}
+          <Animated.View
+            style={[
+              {
+                position: "absolute",
+                left: 0,
+                top: 0,
+                width: buttonWidth,
+                height: containerHeight,
+                backgroundColor: theme.card, // 👈 Color de la cápsula igual al TabBar
+                borderBottomLeftRadius: activeIndex === 0 ? 30 : 0,
+                borderBottomRightRadius:
+                  activeIndex === options.length - 1 ? 30 : 0,
+
+                // 👇 Sombras de la cápsula interna activa
+                shadowColor: theme.primary,
+                shadowOpacity: 0.15,
+                shadowRadius: 12,
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                elevation: 5,
+              },
+              animatedStyle,
+            ]}
+          />
+
+          {/* Mapeo de botones interactivos */}
+          {options.map((option, index) => {
+            const isActive = activeIndex === index;
+
+            return (
+              <Pressable
+                key={option}
+                onPress={() => setActiveIndex(index)}
+                className="items-center justify-center"
+                style={{
+                  width: buttonWidth,
+                  height: containerHeight,
+                  zIndex: 1, // Mantiene el texto visible sobre la cápsula
+                }}
+              >
+                <Text
+                  style={{
+                    fontWeight: "600",
+                    // 👈 Colores de texto sincronizados (Activo/Inactivo)
+                    color: isActive ? theme.primary : theme.muted,
+                  }}
+                >
+                  {option}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
         <View
           style={{
             marginTop: 10,
