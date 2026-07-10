@@ -1,0 +1,117 @@
+{
+  "confirmacion": {
+    "tema": 1,
+    "preguntas": [
+      {
+        "numero_pregunta": 1,
+        "pregunta": "¿Quién es el Espíritu Santo?",
+        "opciones": {
+          "a": "Una energía impersonal del universo",
+          "b": "La tercera Persona de la Santísima Trinidad, que es Dios con el Padre y el Hijo",
+          "c": "Un ángel enviado para protegernos",
+          "d": "Una bonita metáfora de la Biblia"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 2,
+        "pregunta": "¿En qué gran acontecimiento histórico el Espíritu Santo descendió con poder sobre los Apóstoles?",
+        "opciones": {
+          "a": "En la Navidad",
+          "b": "Durante la Última Cena",
+          "c": "En el día de Pentecostés",
+          "d": "En el bautismo de Juan"
+        },
+        "respuesta_correcta": "c"
+      },
+      {
+        "numero_pregunta": 3,
+        "pregunta": "¿Cuántos son los Dones del Espíritu Santo que recibimos en plenitud?",
+        "opciones": {
+          "a": "3 dones",
+          "b": "5 dones",
+          "c": "10 dones",
+          "d": "7 dones"
+        },
+        "respuesta_correcta": "d"
+      },
+      {
+        "numero_pregunta": 4,
+        "pregunta": "¿Qué don nos ayuda a entender las verdades de la fe y la Palabra de Dios con mayor claridad?",
+        "opciones": {
+          "a": "El Don de Entendimiento o Inteligencia",
+          "b": "El Don de Temor de Dios",
+          "c": "El Don de Ciencia",
+          "d": "El Don de Fortaleza"
+        },
+        "respuesta_correcta": "a"
+      },
+      {
+        "numero_pregunta": 5,
+        "pregunta": "El Don de Fortaleza sirve principalmente para:",
+        "opciones": {
+          "a": "Tener más fuerza física para levantar objetos",
+          "b": "Mantenernos firmes en la fe ante las dificultades y tentaciones",
+          "c": "Discutir mejor con las personas",
+          "d": "Hacer milagros espectaculares"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 6,
+        "pregunta": "¿Cuál de los dones nos mueve a tratar a Dios con la confianza y el amor de un hijo?",
+        "opciones": {
+          "a": "El Don de Consejo",
+          "b": "El Don de Sabiduría",
+          "c": "El Don de Piedad",
+          "d": "El Don de Ciencia"
+        },
+        "respuesta_correcta": "c"
+      },
+      {
+        "numero_pregunta": 7,
+        "pregunta": "¿Qué significa tener el Don de 'Temor de Dios'?",
+        "opciones": {
+          "a": "Tenerle miedo a Dios porque nos va a castigar",
+          "b": "Un respeto profundo y el deseo sincero de no ofenderlo por el amor que le tenemos",
+          "c": "Evitar ir a la Iglesia por temor",
+          "d": "Pensar que Dios está enojado con el mundo"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 8,
+        "pregunta": "¿Qué signo visible o símbolo representa frecuentemente al Espíritu Santo en la Confirmación?",
+        "opciones": {
+          "a": "El agua y una roca",
+          "b": "El fuego, el viento y la paloma",
+          "c": "Una corona de oro",
+          "d": "Una barca en el mar"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 9,
+        "pregunta": "¿Qué produce la presencia del Espíritu Santo en la vida del cristiano?",
+        "opciones": {
+          "a": "Frutos de amor, gozo, paz, paciencia y bondad",
+          "b": "Riquezas materiales inmediatas",
+          "c": "Orgullo y superioridad ante los demás",
+          "d": "Dudas sobre las decisiones de la vida"
+        },
+        "respuesta_correcta": "a"
+      },
+      {
+        "numero_pregunta": 10,
+        "pregunta": "¿Cómo podemos mantener activo el fuego del Espíritu Santo en nuestro corazón?",
+        "opciones": {
+          "a": "Dejando de ir a misa",
+          "b": "Mediante la oración constante, los sacramentos y haciendo el bien",
+          "c": "Estudiando solo cosas que no tengan que ver con la fe",
+          "d": "Ignorando las necesidades del prójimo"
+        },
+        "respuesta_correcta": "b"
+      }
+    ]
+  }
+}

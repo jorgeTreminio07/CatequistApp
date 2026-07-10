@@ -1,0 +1,117 @@
+{
+  "confirmacion": {
+    "tema": 2,
+    "preguntas": [
+      {
+        "numero_pregunta": 1,
+        "pregunta": "¿Qué significa ser 'Testigo de Cristo' en el mundo actual?",
+        "opciones": {
+          "a": "Hablar de Jesús únicamente dentro del templo",
+          "b": "Demostrar con nuestras palabras y acciones cotidianas que creemos en Jesús y vivimos su Evangelio",
+          "c": "Observar lo que hacen los demás sin intervenir",
+          "d": "Saberse todas las oraciones de memoria sin practicarlas"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 2,
+        "pregunta": "Al recibir el Sacramento de la Confirmación, nuestra misión en la Iglesia pasa a ser la de un:",
+        "opciones": {
+          "a": "Cristiano maduro, comprometido y defensor de la fe",
+          "b": "Espectador pasivo que solo asiste por costumbre",
+          "c": "Estudiante que ya terminó y no necesita aprender más",
+          "d": "Miembro exclusivo sin responsabilidades"
+        },
+        "respuesta_correcta": "a"
+      },
+      {
+        "numero_pregunta": 3,
+        "pregunta": "¿Cuál es el principal mandato de Jesús que un testigo debe cumplir?",
+        "opciones": {
+          "a": "Buscar el éxito personal sobre todas las cosas",
+          "b": "Amar a Dios sobre todas las cosas y al prójimo como a nosotros mismos",
+          "c": "Evitar relacionarse con personas que piensen diferente",
+          "d": "Cumplir normas solo por temor a las críticas"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 4,
+        "pregunta": "¿Quién es el ministro ordinario encargado de administrar el sacramento de la Confirmación?",
+        "opciones": {
+          "a": "Cualquier persona de la comunidad",
+          "b": "El Obispo de la diócesis",
+          "c": "Los padrinos del confirmado",
+          "d": "Únicamente los catequistas"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 5,
+        "pregunta": "¿Qué óleo sagrado utiliza el Obispo para ungir la frente del confirmado?",
+        "opciones": {
+          "a": "Aceite de cocina común",
+          "b": "Agua bendita especial",
+          "c": "El Santo Crisma",
+          "d": "Esencia de flores silvestres"
+        },
+        "respuesta_correcta": "c"
+      },
+      {
+        "numero_pregunta": 6,
+        "pregunta": "Durante la unción en la Confirmación, ¿cuáles son las palabras esenciales que dice el Obispo?",
+        "opciones": {
+          "a": "Yo te bautizo en el nombre del Padre, del Hijo y del Espíritu Santo",
+          "b": "Recibe por esta señal el Don del Espíritu Santo",
+          "c": "Quedas libre de toda culpa y pecado del pasado",
+          "d": "Ve en paz y que todo te salga bien"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 7,
+        "pregunta": "¿Cuál es el rol o deber principal de un padrino o madrina de Confirmación?",
+        "opciones": {
+          "a": "Darle regalos costosos al confirmado el día de su fiesta",
+          "b": "Acompañar al confirmado y guiarlo con su ejemplo a ser un buen testigo de Cristo",
+          "c": "Asistir únicamente a la ceremonia y luego distanciarse",
+          "d": "Tomar las decisiones importantes por el confirmado"
+        },
+        "respuesta_correcta": "b"
+      },
+      {
+        "numero_pregunta": 8,
+        "pregunta": "¿Por qué se dice que la Confirmación completa la gracia del Bautismo?",
+        "opciones": {
+          "a": "Porque nos une más íntimamente a la Iglesia y nos da una fuerza especial para anunciar la fe",
+          "b": "Porque borra el pecado original por segunda vez",
+          "c": "Porque nos cambia el nombre de nacimiento",
+          "d": "Porque invalida los compromisos previos"
+        },
+        "respuesta_correcta": "a"
+      },
+      {
+        "numero_pregunta": 9,
+        "pregunta": "¿En qué lugares de las realidades de hoy debe actuar un testigo de Cristo?",
+        "opciones": {
+          "a": "En la familia, el colegio, el trabajo, las redes sociales y con los amigos",
+          "b": "Exclusivamente los domingos por la mañana en la parroquia",
+          "c": "Solo cuando esté con personas que sean muy religiosas",
+          "d": "En ningún sitio público para evitar problemas"
+        },
+        "respuesta_correcta": "a"
+      },
+      {
+        "numero_pregunta": 10,
+        "pregunta": "¿Cuál es la mejor manera de defender nuestra fe cristiana como testigos auténticos?",
+        "opciones": {
+          "a": "Peleando y discutiendo agresivamente en internet",
+          "b": "Conociendo bien lo que creemos, hablándolo con respeto y, sobre todo, viviendo con coherencia y amor",
+          "c": "Ocultando nuestras creencias para no incomodar a nadie",
+          "d": "Obligando a los demás a pensar exactamente igual que nosotros"
+        },
+        "respuesta_correcta": "b"
+      }
+    ]
+  }
+}

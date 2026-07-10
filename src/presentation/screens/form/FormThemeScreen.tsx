@@ -12,10 +12,11 @@ import {
   View,
 } from "react-native";
 
-// Importación del archivo proveedor/router de temas
+import { getThemeDataConfirmacion } from "@/Infrastructure/formData/theme-provider-confirmacion";
 import { ThemeVideoRepository } from "@/Infrastructure/repository/ThemeVideoRepository";
 import { useSQLiteContext } from "expo-sqlite";
 import { getThemeData } from "../../../Infrastructure/formData/theme-provider";
+import { useCategoryStore } from "../tabs/store/use-category-store";
 
 const FormThemeScreen = () => {
   const { id } = useLocalSearchParams();
@@ -40,14 +41,31 @@ const FormThemeScreen = () => {
     null,
   );
   const [hasAnswered, setHasAnswered] = useState(false);
-
-  // --- ESTADO: CONTADOR DE ACIERTOS ---
   const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+  const activeCategory = useCategoryStore((state) => state.activeCategory);
+  const [idCatecism, setIdCatecism] = useState(1);
 
-  // EFECTO 1: Carga inicial y mezcla general de todas las preguntas (Solo se ejecuta al montar la pantalla)
+  // EFECTO 1: Carga inicial y mezcla general de todas las preguntas
   useEffect(() => {
-    const selectedThemeData = getThemeData(currentThemeId);
-    const rawPreguntas = [...(selectedThemeData?.comunion?.preguntas || [])];
+    let selectedThemeData: any = null;
+
+    if (activeCategory === "Comunion") {
+      selectedThemeData = getThemeData(currentThemeId);
+      setIdCatecism(1);
+      console.log("Catecismo: comunion form", activeCategory);
+    } else if (activeCategory === "Confirmacion") {
+      selectedThemeData = getThemeDataConfirmacion(currentThemeId);
+      setIdCatecism(2);
+      console.log("Catecismo: Confirmacion form", activeCategory);
+    }
+
+    if (!selectedThemeData) return;
+
+    //  LINEAS CLAVE: Detecta la propiedad correcta dinámicamente ("comunion" o "confirmacion")
+    const categoriaKey =
+      activeCategory === "Comunion" ? "comunion" : "confirmacion";
+    const dataCategoria = selectedThemeData[categoriaKey] || selectedThemeData;
+    const rawPreguntas = [...(dataCategoria?.preguntas || [])];
 
     // Mezclado Fisher-Yates para el orden de las preguntas
     for (let i = rawPreguntas.length - 1; i > 0; i--) {
@@ -57,7 +75,7 @@ const FormThemeScreen = () => {
 
     // Guardamos la lista desordenada y limitamos a la cantidad total de preguntas configuradas
     setShuffledQuestionsList(rawPreguntas.slice(0, totalQuestions));
-  }, [currentThemeId]);
+  }, [currentThemeId, activeCategory]);
 
   // EFECTO 2: Carga y mezcla las opciones de la pregunta actual basándose en la lista desordenada
   useEffect(() => {
@@ -155,9 +173,11 @@ const FormThemeScreen = () => {
           const repository = new ThemeVideoRepository(db);
           const idNumerico = Number(id);
 
-          await repository.setStatusDone(idNumerico);
+          await repository.setStatusDone(idNumerico, idCatecism);
 
-          console.log(`Tema actualizado a 'done'. ID: ${idNumerico}`);
+          console.log(
+            `Tema actualizado a 'done'. ID: ${idNumerico} Catecismo: ${idCatecism}`,
+          );
         } catch (error) {
           console.error("No se pudo guardar el progreso en SQLite:", error);
         }

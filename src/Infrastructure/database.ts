@@ -13,12 +13,21 @@ export async function initializeDatabase(): Promise<SQLite.SQLiteDatabase> {
   const db = await SQLite.openDatabaseAsync(DATABASE_NAME);
   dbInstance = db;
 
-  console.log("Inicializando tablas por primera vez en esta sesión...");
+  console.log("Configurando tablas de forma persistente (sin borrar datos)...");
 
   await db.execAsync(`
     PRAGMA journal_mode = WAL;
+    PRAGMA foreign_keys = ON;
+    
+    CREATE TABLE IF NOT EXISTS catecism (
+      catecismId INTEGER PRIMARY KEY NOT NULL,
+      name TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS themes (
       themeId INTEGER PRIMARY KEY NOT NULL,
+      catecismId INTEGER NOT NULL,
+      themebycatecismId INTEGER NOT NULL,
       themeTittle TEXT NOT NULL,
       subTittle TEXT NOT NULL,
       icon TEXT NOT NULL,
@@ -27,21 +36,35 @@ export async function initializeDatabase(): Promise<SQLite.SQLiteDatabase> {
       videoIdProp TEXT NOT NULL,
       ContentTittle TEXT NOT NULL,
       content TEXT NOT NULL,
-      color TEXT NOT NULL
+      color TEXT NOT NULL,
+      FOREIGN KEY (catecismId) REFERENCES catecism(catecismId)
     );
   `);
+
+  const catecismCheck = await db.getFirstAsync<{ count: number }>(
+    "SELECT COUNT(*) as count FROM catecism;",
+  );
+
+  if (catecismCheck && catecismCheck.count === 0) {
+    console.log("Insertando registros iniciales en la tabla catecism...");
+    await db.runAsync(
+      `INSERT INTO catecism (catecismId, name) VALUES (1, 'Comunión'), (2, 'Confirmación');`,
+    );
+  }
 
   const result = await db.getFirstAsync<{ count: number }>(
     "SELECT COUNT(*) as count FROM themes;",
   );
 
   if (result && result.count === 0) {
-    console.log("Base de datos vacía. Insertando mocks...");
+    console.log("Base de datos vacía. Insertando mocks con orden local...");
     for (const theme of MOCK_THEMES) {
       await db.runAsync(
-        `INSERT INTO themes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+        `INSERT INTO themes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
         [
           theme.themeId,
+          theme.catecismId,
+          theme.themebycatecismId,
           theme.themeTittle,
           theme.subTittle,
           theme.icon,
@@ -54,7 +77,11 @@ export async function initializeDatabase(): Promise<SQLite.SQLiteDatabase> {
         ],
       );
     }
-    console.log("¡Mocks cargados!");
+    console.log("¡Mocks cargados exitosamente por primera vez!");
+  } else {
+    console.log(
+      `Base de datos detectada con ${result?.count} temas persistidos.`,
+    );
   }
 
   return dbInstance;

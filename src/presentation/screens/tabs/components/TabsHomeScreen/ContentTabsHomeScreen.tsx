@@ -9,12 +9,11 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import ThemeCard from "./ThemeCard";
-
-import { useState } from "react";
 import Animated from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
 import { useSegmentedAnimation } from "../../hooks/useSegmentedAnimation";
+import { useCategoryStore } from "../../store/use-category-store";
+import ThemeCard from "./ThemeCard";
 
 interface ContentTabsHomeScreenProps {
   listaTemas: ThemeVideoData[];
@@ -29,12 +28,10 @@ const ContentTabsHomeScreen = ({
   const theme = useThemeColors();
   const headerHeight = height * 0.25;
 
-  // Cálculos de maquetación para centrar las líneas perfectamente
   const paddingContenedor = width * 0.07;
   const anchoDisponible = width - paddingContenedor * 2;
   const anchoCard = width * 0.7;
 
-  // Puntos centrales exactos de la Card según su lado de alineación
   const centroIzquierdo = anchoCard / 2;
   const centroDerecho = anchoDisponible - anchoCard / 2;
 
@@ -42,9 +39,9 @@ const ContentTabsHomeScreen = ({
 
   // 1. Estado local y opciones puramente para mover el botón visualmente
   const options = ["Comunion", "Confirmacion"];
-  const [activeIndex, setActiveIndex] = useState(0);
+  // 2. Consumimos el índice y la función desde el estado global
+  const { activeIndex, setCategory } = useCategoryStore();
 
-  // 2. Ejecución de tu hook de animación
   const { containerWidth, containerHeight, buttonWidth, animatedStyle } =
     useSegmentedAnimation({
       activeIndex,
@@ -73,14 +70,12 @@ const ContentTabsHomeScreen = ({
         <View
           className="flex-row justify-center items-center overflow-hidden"
           style={{
-            marginBottom: 25, // Un pelín más de espacio para que luzca la sombra
+            marginBottom: 25,
             width: containerWidth,
             height: containerHeight,
-            backgroundColor: theme.secondary, // 👈 Fondo del contenedor igual al TabBar
+            backgroundColor: theme.secondary,
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
-
-            // 👇 Sombras del contenedor principal (Igual al TabBar original)
             shadowColor: "#000",
             shadowOpacity: 0.08,
             shadowRadius: 10,
@@ -100,12 +95,10 @@ const ContentTabsHomeScreen = ({
                 top: 0,
                 width: buttonWidth,
                 height: containerHeight,
-                backgroundColor: theme.card, // 👈 Color de la cápsula igual al TabBar
+                backgroundColor: theme.card,
                 borderBottomLeftRadius: activeIndex === 0 ? 30 : 0,
                 borderBottomRightRadius:
                   activeIndex === options.length - 1 ? 30 : 0,
-
-                // 👇 Sombras de la cápsula interna activa
                 shadowColor: theme.primary,
                 shadowOpacity: 0.15,
                 shadowRadius: 12,
@@ -126,18 +119,17 @@ const ContentTabsHomeScreen = ({
             return (
               <Pressable
                 key={option}
-                onPress={() => setActiveIndex(index)}
+                onPress={() => setCategory(index)}
                 className="items-center justify-center"
                 style={{
                   width: buttonWidth,
                   height: containerHeight,
-                  zIndex: 1, // Mantiene el texto visible sobre la cápsula
+                  zIndex: 1,
                 }}
               >
                 <Text
                   style={{
                     fontWeight: "600",
-                    // 👈 Colores de texto sincronizados (Activo/Inactivo)
                     color: isActive ? theme.primary : theme.muted,
                   }}
                 >
@@ -186,7 +178,7 @@ const ContentTabsHomeScreen = ({
                 }
               }
 
-              // 🧠 CÁLCULO DE PUNTOS DE CONTROL BÉZIER PARA LA CURVA EN "S"
+              // CÁLCULO DE PUNTOS DE CONTROL BÉZIER PARA LA CURVA EN "S"
               // cp1x y cp2x controlan la curvatura horizontal para imitar el screenshot
               const cp1x = x1;
               const cp1y = altoSvg * 0.5; // Punto medio vertical para suavizar la salida
@@ -209,7 +201,7 @@ const ContentTabsHomeScreen = ({
                       if (tema.status !== "blocked") {
                         router.push({
                           pathname: "/theme/[id]",
-                          params: { id: tema.themeId },
+                          params: { id: tema.themebycatecismId.toString() },
                         });
                       }
                     }}
@@ -220,7 +212,7 @@ const ContentTabsHomeScreen = ({
                       style={{
                         width: "100%",
                         height: altoSvg,
-                        marginTop: -5, // Ajuste para calzar justo al ras de los bordes del ThemeCard
+                        marginTop: -5,
                         marginBottom: -5,
                       }}
                     >
@@ -230,8 +222,8 @@ const ContentTabsHomeScreen = ({
                           fill="transparent"
                           stroke={colorLinea}
                           strokeWidth="3.5"
-                          strokeDasharray="6, 9" // 👈 Espaciado de puntos según la imagen
-                          strokeLinecap="round" // Hace que los puntos/guiones sean redondeados
+                          strokeDasharray="6, 9"
+                          strokeLinecap="round"
                         />
                       </Svg>
                     </View>

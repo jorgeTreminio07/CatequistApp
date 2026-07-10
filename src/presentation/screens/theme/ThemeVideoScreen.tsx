@@ -19,6 +19,7 @@ import {
   ThemeVideoRepository,
 } from "@/Infrastructure/repository/ThemeVideoRepository";
 import YoutubePlayer from "react-native-youtube-iframe";
+import { useCategoryStore } from "../tabs/store/use-category-store";
 import HeaderThemeVideoScreen from "./components/HeaderThemeVideoScreen";
 
 const ThemeVideoScreen = () => {
@@ -40,6 +41,9 @@ const ThemeVideoScreen = () => {
   const [tema, setTema] = useState<ThemeVideoData | null>(null);
   const [cargando, setCargando] = useState(true);
 
+  const activeCategory = useCategoryStore((state) => state.activeCategory);
+  var idCatecism = 1;
+
   useEffect(() => {
     let isMounted = true;
 
@@ -50,7 +54,14 @@ const ThemeVideoScreen = () => {
 
         console.log(`--- Buscando Tema ID: ${id} en SQLite ---`);
 
-        const temaFromDB = await repo.getThemeById(Number(id) || 0);
+        if (activeCategory === "Comunion") {
+          idCatecism = 1;
+        } else if (activeCategory === "Confirmacion") {
+          idCatecism = 2;
+          console.log("Catecismo: Confirmacion");
+        }
+
+        const temaFromDB = await repo.getThemeById(Number(id) || 0, idCatecism);
 
         if (isMounted) {
           setTema(temaFromDB);

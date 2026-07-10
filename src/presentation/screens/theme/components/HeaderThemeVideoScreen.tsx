@@ -69,7 +69,7 @@ const HeaderThemeVideoScreen = ({
             }}
           >
             <Text className="text-sm font-geist-extra-light-italic text-white">
-              Tema {tema.themeId}
+              Tema {tema.themebycatecismId}
             </Text>
             <Text className="text-2xl font-geist-black text-white">
               {tema.themeTittle}

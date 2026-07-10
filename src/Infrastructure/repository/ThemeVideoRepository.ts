@@ -3,15 +3,13 @@ import * as SQLite from "expo-sqlite";
 
 export type ThemeStatus = "start" | "blocked" | "done";
 export type ThemeVariant =
-  | "dios"
-  | "jesus"
-  | "biblia"
-  | "sacramentos"
-  | "oracion";
+  "dios" | "jesus" | "biblia" | "sacramentos" | "oracion";
 export type ThemePosition = "left" | "center" | "right";
 
 export interface ThemeVideoData {
   themeId: number;
+  catecismId: number;
+  themebycatecismId: number;
   themeTittle: string;
   subTittle: string;
   icon: keyof typeof Ionicons.glyphMap;
@@ -30,19 +28,24 @@ export class ThemeVideoRepository {
     this.db = db;
   }
 
-  async setStatusDone(themeId: number): Promise<void> {
+  async setStatusDone(
+    themebycatecismId: number,
+    catecismId: number,
+  ): Promise<void> {
     try {
-      const query = "UPDATE themes SET status = 'done' WHERE themeId = ?;";
-      await this.db.runAsync(query, [themeId]);
-      const queryViewNextTheme = "SELECT status FROM themes WHERE themeId = ?;";
+      const query =
+        "UPDATE themes SET status = 'done' WHERE themebycatecismId = ? AND catecismId = ?;";
+      await this.db.runAsync(query, [themebycatecismId, catecismId]);
+      const queryViewNextTheme =
+        "SELECT status FROM themes WHERE themebycatecismId = ? AND catecismId = ?;";
       const result = await this.db.getFirstAsync<{ status: string }>(
         queryViewNextTheme,
-        [themeId + 1],
+        [themebycatecismId + 1, catecismId],
       );
       if (result?.status === "blocked") {
         const queryTwo =
-          "UPDATE themes SET status = 'start' WHERE themeId = ?;";
-        await this.db.runAsync(queryTwo, [themeId + 1]);
+          "UPDATE themes SET status = 'start' WHERE themebycatecismId = ? AND catecismId = ?;";
+        await this.db.runAsync(queryTwo, [themebycatecismId + 1, catecismId]);
       } else {
         console.log("El siguiente tema ya está desbloqueado o no existe.");
       }
@@ -52,11 +55,13 @@ export class ThemeVideoRepository {
     }
   }
 
-  async countThemesDone(): Promise<number> {
+  async countThemesDone(idCatecism: number): Promise<number> {
     try {
       const query =
-        "SELECT COUNT(*) as count FROM themes where status = 'done';";
-      const result = await this.db.getFirstAsync<{ count: number }>(query);
+        "SELECT COUNT(*) as count FROM themes where status = 'done' and catecismId = ?;";
+      const result = await this.db.getFirstAsync<{ count: number }>(query, [
+        idCatecism,
+      ]);
       if (!result) throw new Error("No se encontraron temas.");
       return result.count;
     } catch (error) {
@@ -65,20 +70,27 @@ export class ThemeVideoRepository {
     }
   }
 
-  async getAllThemes(): Promise<ThemeVideoData[]> {
+  async getAllThemes(idCatecism: number): Promise<ThemeVideoData[]> {
     try {
-      const query = "SELECT * FROM themes;";
-      return await this.db.getAllAsync<ThemeVideoData>(query);
+      const query = "SELECT * FROM themes WHERE catecismId = ?;";
+      return await this.db.getAllAsync<ThemeVideoData>(query, [idCatecism]);
     } catch (error) {
       console.error("Error al obtener todos los temas:", error);
       throw error;
     }
   }
 
-  async getThemeById(themeId: number): Promise<ThemeVideoData | null> {
+  async getThemeById(
+    themeId: number,
+    idCatecism: number,
+  ): Promise<ThemeVideoData | null> {
     try {
-      const query = "SELECT * FROM themes WHERE themeId = ?;";
-      return await this.db.getFirstAsync<ThemeVideoData>(query, [themeId]);
+      const query =
+        "SELECT * FROM themes WHERE themebycatecismId = ? AND catecismId = ?;";
+      return await this.db.getFirstAsync<ThemeVideoData>(query, [
+        themeId,
+        idCatecism,
+      ]);
     } catch (error) {
       console.error(`Error al obtener el tema con ID ${themeId}:`, error);
       throw error;

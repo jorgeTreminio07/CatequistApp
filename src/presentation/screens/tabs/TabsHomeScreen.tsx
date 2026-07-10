@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 import ContentTabsHomeScreen from "./components/TabsHomeScreen/ContentTabsHomeScreen";
 import HeaderTabHomeScreen from "./components/TabsHomeScreen/HeaderTabHomeScreen";
+import { useCategoryStore } from "./store/use-category-store";
 
 const TabsHomeScreen = () => {
   const { width, height } = useWindowDimensions();
@@ -18,6 +19,8 @@ const TabsHomeScreen = () => {
   const [listaTemas, setListaTemas] = useState<ThemeVideoData[]>([]);
   const [countThemesDone, setCountThemesDone] = useState<number>(0);
   const [cargando, setCargando] = useState(true);
+  const activeCategory = useCategoryStore((state) => state.activeCategory);
+  var idCatecism = 1;
 
   useEffect(() => {
     let isMounted = true;
@@ -29,9 +32,16 @@ const TabsHomeScreen = () => {
 
         console.log("--- Cargando Datos desde SQLite ---");
 
+        if (activeCategory === "Comunion") {
+          idCatecism = 1;
+        } else if (activeCategory === "Confirmacion") {
+          idCatecism = 2;
+          console.log("Catecismo: Confirmacion");
+        }
+
         const [temasFromDB, totalCompletados] = await Promise.all([
-          repo.getAllThemes(),
-          repo.countThemesDone(),
+          repo.getAllThemes(idCatecism),
+          repo.countThemesDone(idCatecism),
         ]);
 
         if (isMounted) {
@@ -57,7 +67,7 @@ const TabsHomeScreen = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [activeCategory]);
 
   return (
     <View className="flex-1">
